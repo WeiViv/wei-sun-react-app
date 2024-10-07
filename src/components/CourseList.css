@@ -1,0 +1,27 @@
+.course-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 14rem);
+    gap: 1rem; /* Adds some space between the cards */
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Ensures consistent card height */
+    padding: 1rem;
+    box-sizing: border-box; /* Includes padding in height calculation */
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+    height: 100%; /* Ensures the card body takes full height of the card */
+}
+
+.course-info-divider {
+    display: flex;
+    flex-direction: column;
+    margin-top: auto; /* Pushes this section to the bottom of the card-body */
+}
