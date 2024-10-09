@@ -1,5 +1,5 @@
 import Banner from './components/Banner';
-import CourseList from './components/CourseList';
+import TermPage from './components/TermPage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useJsonQuery } from './utilities/fetch';
 
@@ -13,7 +13,7 @@ const Main = () => {
   return (
     <div>
       <Banner title={data.title}></Banner>
-      <CourseList courses={data.courses}></CourseList>
+      <TermPage courses={data.courses}></TermPage>
     </div>
   );
 }
