@@ -1,15 +1,23 @@
 .course-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, 14rem);
-    gap: 1rem; /* Adds some space between the cards */
+    gap: 1rem;
 }
 
 .card {
     display: flex;
     flex-direction: column;
-    height: 100%; /* Ensures consistent card height */
-    padding: 1rem;
-    box-sizing: border-box; /* Includes padding in height calculation */
+    height: 100%;
+    padding: 0; /* Remove internal padding if necessary */
+    box-sizing: border-box;
+    border: 1px solid #ddd; /* Set a border to make unselected cards visible */
+    transition: background-color 0.3s; /* Smooth transition for color change */
+}
+
+.card.selected {
+    background-color: rgb(64, 165, 241);
+    color: rgb(255, 255, 255);
+    border: 1px solid rgb(64, 165, 241); /* Match border color with background */
 }
 
 .card-body {
@@ -17,11 +25,10 @@
     flex-direction: column;
     justify-content: space-between;
     flex-grow: 1;
-    height: 100%; /* Ensures the card body takes full height of the card */
 }
 
 .course-info-divider {
     display: flex;
     flex-direction: column;
-    margin-top: auto; /* Pushes this section to the bottom of the card-body */
+    margin-top: auto;
 }
