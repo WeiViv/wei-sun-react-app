@@ -28,7 +28,7 @@ const Modal = ({ CoursePlan, open, close }) => (
                     <li key={course.number}>
                         <strong>{course.term} CS {course.number}: {course.title}</strong>
                         <br/>
-                        {course.meets}
+                        <i>Time:</i> {course.meets}
                     </li>
                     ))}
                 </ul>
