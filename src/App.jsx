@@ -12,7 +12,9 @@ const Main = () => {
 
   return (
     <div>
+      <br/>
       <Banner title={data.title}></Banner>
+      <br/>
       <TermPage courses={data.courses}></TermPage>
     </div>
   );

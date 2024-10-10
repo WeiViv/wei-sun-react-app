@@ -1,5 +1,5 @@
 const Banner = ({title}) => (
-    <h1>{title}</h1>
+    <center><h1>{title}</h1></center>
 );
 
 export default Banner;
