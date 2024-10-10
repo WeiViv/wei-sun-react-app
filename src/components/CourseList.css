@@ -1,7 +1,7 @@
 .course-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive columns */
-    gap: 0.1rem; /* Space between the cards */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.1rem;
     margin-top: 10px;
 }
 
@@ -9,17 +9,29 @@
     display: flex;
     flex-direction: column;
     height: 230px;
-    width: 200px;
-    padding: 0; /* Remove internal padding if necessary */
+    padding: 0;
     box-sizing: border-box;
-    border: 1px solid #ddd; /* Set a border to make unselected cards visible */
-    transition: background-color 0.3s; /* Smooth transition for color change */
+    border: 1px solid #ddd;
+    transition: background-color 0.3s;
+    cursor: pointer;
 }
 
 .card.selected {
     background-color: rgb(64, 165, 241);
     color: rgb(255, 255, 255);
-    border: 1px solid rgb(64, 165, 241); /* Match border color with background */
+    border: 1px solid rgb(64, 165, 241);
+}
+
+.card.conflict {
+    background-color: #feb2b9; /* Light red for conflicts */
+    color: #5e656c; /* Gray text */
+    opacity: 0.8; /* Slight fade-out */
+}
+
+.card.conflict:hover {
+    background-color: #e63946; /* Darker red when hovered */
+    color: white; /* White text for better contrast */
+    cursor: not-allowed; /* Indicate that the card is unclickable */
 }
 
 .card-body {
