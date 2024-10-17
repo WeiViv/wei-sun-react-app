@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import TermSelector from './TermSelector';
 import CourseList from './CourseList';
 import Modal from './Modal';
@@ -39,7 +38,6 @@ const TermPage = ({ courses }) => {
             <div className="d-flex">
                 <TermSelector selectedTerm={selectedTerm} setSelectedTerm={setSelectedTerm} />
                 <button className="ms-auto btn btn-outline-dark" onClick={openModal}>Course Plan</button>
-                <Link to="/add" className="ms-auto btn btn-primary">Add Course</Link>
             </div>
             <Modal CoursePlan={CoursePlan} open={open} close={closeModal} />
             <CourseList 

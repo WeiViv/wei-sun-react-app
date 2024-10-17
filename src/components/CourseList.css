@@ -38,19 +38,6 @@
     cursor: not-allowed; /* Indicate that the card is unclickable */
 }
 
-.edit-button {
-    background-color: #007bff;
-    color: white;
-    padding: 0.5em;
-    width: 48px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.edit-button:hover {
-    background-color: rgb(115, 81, 255);
-}
-
 .card-body {
     display: flex;
     flex-direction: column;
