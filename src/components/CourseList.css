@@ -14,6 +14,7 @@
     border: 1px solid #ddd;
     transition: background-color 0.3s;
     cursor: pointer;
+    position: relative; /* Make the card a positioned container */
 }
 
 .card:hover{
@@ -49,4 +50,19 @@
     display: flex;
     flex-direction: column;
     margin-top: auto;
+}
+
+.edit-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none; /* Remove button background */
+    border: none; /* Remove button border */
+    color: inherit; /* Inherit text color from card */
+    font-size: 1.2em; /* Adjust icon size */
+    cursor: pointer;
+}
+
+.edit-button:hover {
+    color: #8414c5; /* Change color on hover */
 }
