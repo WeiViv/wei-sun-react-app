@@ -2,7 +2,8 @@ import Banner from './Banner';
 import TermPage from './TermPage';
 import CourseForm from './CourseForm';
 import { BrowserRouter, Routes, Route, useParams} from "react-router-dom";
-import { useJsonQuery } from '../utilities/fetch';
+
+import { useDbData } from "../utilities/firebase";
 
 const CourseFormWrapper = ({ courses }) => {
     const { courseID } = useParams(); // Get the courseId from the URL
@@ -10,12 +11,12 @@ const CourseFormWrapper = ({ courses }) => {
     return <CourseForm course={course} />;
 };
 
-const Main = ({ url }) => {
-    const [data, isLoading, error] = useJsonQuery(url);
+const Main = () => {
+    const [data, error] = useDbData('/');
 
-    if (error) {return <h1>Error loading courses data: {`${error}`}</h1>};
-    if (isLoading) {return <h1>Loading courses data...</h1>};
-    if (!data) {return <h1>No course data found</h1>};
+    if (error) return <h1>Error loading data: {error.toString()}</h1>;
+    if (data === undefined) return <h1>Loading data...</h1>;
+    if (!data) return <h1>No data found</h1>;
 
     return (
         <BrowserRouter>
