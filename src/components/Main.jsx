@@ -8,7 +8,7 @@ import { useDbData } from "../utilities/firebase";
 const CourseFormWrapper = ({ courses }) => {
     const { courseID } = useParams(); // Get the courseId from the URL
     const course = courses[courseID];
-    return <CourseForm course={course} />;
+    return <CourseForm course={course} courseID={courseID}/>;
 };
 
 const Main = () => {

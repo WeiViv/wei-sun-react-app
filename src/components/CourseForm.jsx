@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { validateTitle, validateMeets } from '../utilities/courseEditValidator';
+import { useDbUpdate } from '../utilities/firebase';
 
 const InputField = ({ name, text, value, onChange, error }) => (
     <div className="mb-3">
@@ -17,17 +18,24 @@ const InputField = ({ name, text, value, onChange, error }) => (
     </div>
 );
 
-const CourseForm = ({ course }) => {
-    const { term, number, title = "", meets = "" } = course || {};
+const CourseForm = ({ course , courseID }) => {
+    const { term, number, title = "", meets = ""} = course || {};
+    const [updateData, result] = useDbUpdate(`/courses/${courseID}`);
     const navigate = useNavigate();
 
     // State for form fields and errors
     const [formValues, setFormValues] = useState({ title, meets });
     const [errors, setErrors] = useState({ title: "", meets: "" });
 
+    const initialTittle = title, initialMeets = meets;
+    const [noChangesWarning, setNoChangesWarning] = useState(false);
+
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormValues((prev) => ({ ...prev, [name]: value }));
+
+        // Reset warning if user makes changes
+        setNoChangesWarning(false);
 
         // Run validation for the changed field
         if (name === "title") {
@@ -46,10 +54,15 @@ const CourseForm = ({ course }) => {
 
         if (titleError || meetsError) {
             setErrors({ title: titleError, meets: meetsError });
+        }else if(initialTittle === formValues.title && initialMeets === formValues.meets){
+            setNoChangesWarning(true);
         } else {
-            // Proceed with form submission (e.g., save data) if no errors
+            // Trigger the update
+            updateData(formValues);
+
+            // If update is successful, navigate back
             console.log("Form submitted successfully:", formValues);
-            navigate(-1); // Redirect back to previous page
+            navigate(-1);// Redirect back to previous page
         }
     };
 
@@ -70,6 +83,12 @@ const CourseForm = ({ course }) => {
                 onChange={handleChange}
                 error={errors.meets}
             />
+            {/* Warning message if no changes have been made */}
+            {noChangesWarning && (
+                <div className="alert alert-warning" role="alert">
+                    No changes have been made. Click "Cancel" instead of "Submit" to go back.
+                </div>
+            )}
             <div className="d-flex">
                 <button type="button" className="btn btn-outline-dark me-2" onClick={() => navigate(-1)}>Cancel</button>
                 <button type="submit" className="btn btn-primary me-auto">Submit</button>
