@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { validateTitle, validateMeets } from '../utilities/courseEditValidator';
+import { validateData } from '../utilities/courseEditValidator';
 import { useDbUpdate } from '../utilities/firebase';
+import { useFormData } from '../utilities/useFormData';
 
-const InputField = ({ name, text, value, onChange, error }) => (
+const InputField = ({ name, text, state, change}) => (
     <div className="mb-3">
         <label htmlFor={name} className="form-label">{text}</label>
         <input 
@@ -11,82 +12,67 @@ const InputField = ({ name, text, value, onChange, error }) => (
             className="form-control"
             id={name}
             name={name}
-            value={value}
-            onChange={onChange}
+            defaultValue={state.values?.[name]} 
+            onChange={change}
         />
-        {error && <div className="text-danger mt-1">{error}</div>}
+        <div className="text-danger mt-1">{state.errors?.[name]}</div>
     </div>
 );
 
-const CourseForm = ({ course , courseID }) => {
-    const { term, number, title = "", meets = ""} = course || {};
-    const [updateData, result] = useDbUpdate(`/courses/${courseID}`);
+const CourseForm = ({ course , courseId }) => {
+    const { term, number, title: initialTitle, meets: initialMeets } = course || {};
+    // console.log("Initial Values:", {initialTitle, initialMeets});
+
     const navigate = useNavigate();
 
-    // State for form fields and errors
-    const [formValues, setFormValues] = useState({ title, meets });
-    const [errors, setErrors] = useState({ title: "", meets: "" });
+    const [updateData, result] = useDbUpdate(`/courses/${courseId}`);
+    const [state, change] = useFormData(validateData, { title: initialTitle, meets: initialMeets });
 
-    const initialTittle = title, initialMeets = meets;
     const [noChangesWarning, setNoChangesWarning] = useState(false);
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormValues((prev) => ({ ...prev, [name]: value }));
-
-        // Reset warning if user makes changes
-        setNoChangesWarning(false);
-
-        // Run validation for the changed field
-        if (name === "title") {
-            setErrors((prev) => ({ ...prev, title: validateTitle(value) }));
-        } else if (name === "meets") {
-            setErrors((prev) => ({ ...prev, meets: validateMeets(value) }));
-        }
-    };
-
     const handleSubmit = (event) => {
-        event.preventDefault(); // Prevent form submission and page reload
+        event.preventDefault();
 
-        // Validate all fields before submission
-        const titleError = validateTitle(formValues.title);
-        const meetsError = validateMeets(formValues.meets);
+        // Check if there are no changes
+        const noChanges = initialTitle === state.values.title && initialMeets === state.values.meets;
+        setNoChangesWarning(noChanges);
 
-        if (titleError || meetsError) {
-            setErrors({ title: titleError, meets: meetsError });
-        }else if(initialTittle === formValues.title && initialMeets === formValues.meets){
-            setNoChangesWarning(true);
-        } else {
-            updateData({ title, meets });
-            console.log(result?.status);
-        
-            if (result?.status === 'success') {
-                // If update is successful, navigate back
-                console.log("Form submitted successfully:", formValues);
-                navigate(-1);// Redirect back to previous page
-            } else if (result?.status === 'error') {
-                console.error("Error updating course:", result.error);
-                alert("Failed to update course.");
-            }
+        if (noChanges) {
+            console.log("No changes detected, form submission prevented.");
+            return; // Prevent submission if no changes
         }
+
+        // Proceed with update if changes are detected
+        updateData(state.values);
     };
 
+    // Redirect to the previous page on successful update
+    useEffect(() => {
+        console.log("Result:", result);
+        if (result?.status === 'success') {
+            console.log("Update successful:", state.values);
+            navigate(-1); // Go back to previous page on success
+        } else if (result?.status === 'error') {
+            console.error("Error updating course:", result.error);
+            alert("Failed to update course.");
+        }
+    }, [result, navigate, state.values]);
+        
+    
     return (
         <form className="mt-3" onSubmit={handleSubmit}>
             <h2 className='mb-3'>Edit Course - <u><b>{term} CS {number}</b></u></h2>
             <InputField 
                 name="title"
                 text="Course Title"
-                value={formValues.title}
-                onChange={handleChange}
-                error={errors.title}
+                state={state}
+                change={change}
             />
             <InputField 
                 name="meets"
                 text="Course Meets"
-                value={formValues.meets}
-                onChange={handleChange}
-                error={errors.meets}
+                state={state}
+                change={change}
             />
             {/* Warning message if no changes have been made */}
             {noChangesWarning && (

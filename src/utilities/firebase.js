@@ -33,20 +33,31 @@ export const useDbData = (path) => {
     ), [path]);
     return [data, error];
 };
-const makeResult = (error) => {
+
+const makeResult = (status, error = null) => {
     const timestamp = Date.now();
-    const message = error?.message || `Updated: ${new Date(timestamp).toLocaleString()}`;
-    return { timestamp, error, message };
+    const message = error ? error.message : `Updated: ${new Date(timestamp).toLocaleString()}`;
+    return { status, timestamp, error, message };
 };
+
 export const useDbUpdate = (path) => {
-    const [result, setResult] = useState();
+    const [result, setResult] = useState(null);
     const updateData = useCallback((value) => {
+        // Set status to 'pending' before the update begins
+        setResult(makeResult('pending'));
+
         update(ref(database, path), value)
-        .then(() => setResult(makeResult()))
-        .catch((error) => setResult(makeResult(error)))
-    }, [database, path]);
+            .then(() => {
+                setResult(makeResult('success'));
+            })
+            .catch((error) => {
+                setResult(makeResult('error', error));
+            });
+    }, [path]);
+
     return [updateData, result];
 };
+
 
 export const signInWithGoogle = () => {
     signInWithPopup(getAuth(firebase), new GoogleAuthProvider());
