@@ -57,12 +57,17 @@ const CourseForm = ({ course , courseID }) => {
         }else if(initialTittle === formValues.title && initialMeets === formValues.meets){
             setNoChangesWarning(true);
         } else {
-            // Trigger the update
-            updateData(formValues);
-
-            // If update is successful, navigate back
-            console.log("Form submitted successfully:", formValues);
-            navigate(-1);// Redirect back to previous page
+            updateData({ title, meets });
+            console.log(result?.status);
+        
+            if (result?.status === 'success') {
+                // If update is successful, navigate back
+                console.log("Form submitted successfully:", formValues);
+                navigate(-1);// Redirect back to previous page
+            } else if (result?.status === 'error') {
+                console.error("Error updating course:", result.error);
+                alert("Failed to update course.");
+            }
         }
     };
 

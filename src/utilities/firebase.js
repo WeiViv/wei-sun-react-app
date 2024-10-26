@@ -3,6 +3,9 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, onValue, ref, update } from 'firebase/database';
 import { getAnalytics } from "firebase/analytics";
 
+import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
+
+
 const firebaseConfig = {
     apiKey: "AIzaSyC0JgjKavj6fky5dye1z3CkzlELTEc_PEg",
     authDomain: "wei-sun-react-app-9d712.firebaseapp.com",
@@ -43,4 +46,22 @@ export const useDbUpdate = (path) => {
         .catch((error) => setResult(makeResult(error)))
     }, [database, path]);
     return [updateData, result];
+};
+
+export const signInWithGoogle = () => {
+    signInWithPopup(getAuth(firebase), new GoogleAuthProvider());
+    };
+    
+    const firebaseSignOut = () => signOut(getAuth(firebase));
+    
+    export { firebaseSignOut as signOut };
+    
+    export const useAuthState = () => {
+        const [user, setUser] = useState();
+        
+        useEffect(() => (
+        onAuthStateChanged(getAuth(firebase), setUser)
+        ), []);
+    
+        return [user];
 };
